@@ -1,63 +1,73 @@
 import datetime
-from gen_book import Book
-from gen_reader import Reader
+import random
+import logging
+from constants import Book, Reader
+
+logging.basicConfig(filename='library.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 
 
 class Library:
     def __init__(self):
         self.books = []
         self.readers = []
-        self.issued_books = []
 
-    def new_books(self, title, author, code):
-        self.books.append(Book(title, author, code))
+    def new_books_reg(self, book):
+        self.books.append(book)
+        logging.info(f'New book added: "{book.title}" author {book.author} (book code: {book.code}) .')
 
-    def reader(self, first_name, last_name, reader_id):
-        for reader in self.readers:
-            if reader.reader_id == reader_id:
-                print(f"Reader with this ID already registered.")
-                return
-            new_reader = Reader(first_name, last_name, reader_id)
-            self.readers.append(new_reader)
-            print(f"New reader {first_name} {last_name} add in library")
+    def new_reader_reg(self):
+        reader_id = random.randint(1, 9999999)
+        while any(reader.reader_id == reader_id for reader in self.readers):
+            reader_id = random.randint(1, 9999999)
 
-    def list_available_books(self):
+        reader = Reader(first_name, last_name, reader_id)
+        self.readers.append(reader)
+        logging.info(f'New reader added: {reader.first_name} {reader.last_name} (reader ID: {reader.reader_id}) .')
+        print(f'Reader {reader.first_name} {reader.last_name} successfully registered, your ID ->{reader.reader_id}) .')
+
+    def show_available_books(self):
+        available_books = [book for book in self.books if book.issued_code is None]
+        if available_books:
+            print(f"Available books:")
+            for book in available_books:
+                print(f'Book name: "{book.title}", Author: {book.author},  Book Code: ({book.code}) .')
+        else:
+            print("All books was issued to the readers.")
+
+    def show_issued_books(self):
+        issued_books = [book for book in self.books if book.issued_id is not None]
+        if issued_books:
+            print("Issued books:")
+            for book in issued_books:
+                print(f'Book name: "{book.title}", Author: {book.author},  Book Code: {book.code}) .')
+        else:
+            print("All books in the Library right now.")
+
+    def borrow_book(self, reader_id, book_code):
         for book in self.books:
-            print(f"Book {book.title}, {book.author}, {book.code}")
+            if book.code == book_code:
+                if book.issued_id is None:
+                    book.issued_id = reader_id
+                    book.issued_date = datetime.datetime.now()
+                    logging.info(f'Book "{book.title}" issued to reader {reader.first_name} with ID {reader_id} .')
+                    print(f'Book "{book.title}" issued to reader {reader.first_name} with ID {reader_id} .')
+                    return
+                else:
+                    print("Book already issued.")
+                    return
+        print("Book was not found.")
 
-    def list_issued_books(self):
-        return [book for book in self.books if book.is_issued]
+    def return_book(self,book_code):
+        for book in self.books:
+            if book.code == book_code and book.issued_code is not None:
+                book.return_date = datetime.datetime.now()
+                logging.info(f'Book "{book.title}" was returned.')
+                book.issued_code = None
+                book.issued_date = None
+                print(f'Book "{book.title}" was returned.')
+                return
+        print("Book was not found or not issued to the reader.")
 
-    def borrow_book(self,reader_id,book_code):
-        reader = next((r for r in self.readers if r.reader_id == reader_id), None)
-        book = next((b for b in self.books if b.book_code == book_code), None)
-        if not reader:
-            print("Reader not found")
-            return
-        if not book:
-            print("Book with this code not found")
-            return
-        if not book.is_available:
-            print("Book alreade issued to another reader")
-            return
-
-        book.is_available = False
-        reader.borrowed_books.append((book, datetime.now()))
-        print(f"Book '{book.title} issued to the reader {reader.first_name} {reader.last_name}.")
-
-    def return_book(self, reader_id, book_code):
-        reader = next((r for r in self.readers if r.reader_id == reader_id), None)
-        book = next((b for b in self.books if b.code == book_code), None)
-        if not reader:
-            print("Reader not found")
-            return
-        if book not in [b[0] for b in reader.borrowed_books]:
-            print("This book not with reader")
-        return
-
-        reader.borrowed_books = [b for b in reader.borrowed_books if b[0] != book]
-        book.is_available = True
-        print(f"Book '{book.title}' was return by reader {reader.first_name} {reader.last_name}")
 
 
 
