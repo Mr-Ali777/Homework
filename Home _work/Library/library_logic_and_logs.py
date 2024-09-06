@@ -16,6 +16,8 @@ class Library:
         logging.info(f'New book added: "{book.title}" author {book.author} (book code: {book.code}) .')
 
     def new_reader_reg(self):
+        first_name = input("Enter your name: ")
+        last_name = input("Enter your last name: ")
         reader_id = random.randint(1, 9999999)
         while any(reader.reader_id == reader_id for reader in self.readers):
             reader_id = random.randint(1, 9999999)

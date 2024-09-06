@@ -1,3 +1,5 @@
+import random
+
 class Book:
     def __init__(self, title, author, code):
         self.title = title
@@ -13,3 +15,4 @@ class Reader:
         self.first_name = first_name
         self.last_name = last_name
         self.reader_id = reader_id
+
