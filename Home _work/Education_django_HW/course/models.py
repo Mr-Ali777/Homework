@@ -26,7 +26,9 @@ class Topic(models.Model):
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f"{self.pk} - {self.topic_name}"
+        return f"{self.course.title} - {self.pk} {self.topic_name}"
+
+
 
 
 
