@@ -1,5 +1,5 @@
 from django import forms
-from models import Topic
+from .models import Topic
 
 
 class Topic_form(forms.ModelForm):
