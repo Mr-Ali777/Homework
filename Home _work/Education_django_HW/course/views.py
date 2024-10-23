@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http.response import HttpResponse
-=======
-from django.shortcuts import render, redirect
->>>>>>> 4d61fc074de8b44c001ec9866451c5578de7dc71
 from .models import Topic
 from .forms import Topic_form
 
@@ -19,11 +15,7 @@ def create_topic_view(request):
         form = Topic_form(request.POST)
         if form.is_valid():
             form.save()
-<<<<<<< HEAD
             return redirect('topic_list')
-=======
-            return redirect('/topic_list')
->>>>>>> 4d61fc074de8b44c001ec9866451c5578de7dc71
     else:
         form = Topic_form()
     return render(request, 'create_topic.html', {'form': form})
