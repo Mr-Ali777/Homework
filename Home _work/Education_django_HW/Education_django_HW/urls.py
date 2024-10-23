@@ -19,9 +19,12 @@ from django.urls import path
 from course import views
 
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('topic_list/', views.topic_list_view),
-    path('topic_create/', views.create_topic_view)
+    path('topic_create/', views.create_topic_view),
+    path('topic_detail_view/<int:pk>', views.detail_view),
+    path('topic_update/update/<int:pk>', views.topic_update),
+    path('topic_del/<int:pk>', views.topic_del)
 ]
+
